@@ -13,7 +13,7 @@
 
 mod data;
 mod table;
-use crate::precision::{exp_value, madd, madd_f32, Dd};
+use crate::precision::{Dd, exp_value, madd, madd_f32};
 use core::simd::prelude::*;
 use data::*;
 

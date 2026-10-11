@@ -65,7 +65,7 @@ mod centers;
 mod params;
 
 use crate::log::{data::*, reduction};
-use centers::{LOG2_TABLE, LOG_TABLE};
+use centers::{LOG_TABLE, LOG2_TABLE};
 use core::simd::prelude::*;
 use params::{INDEX_SHIFT, OFFSET, TABLE_SIZE};
 

@@ -17,7 +17,7 @@
  */
 
 use super::super::data::*;
-use super::{round_quadrant, Reduced};
+use super::{Reduced, round_quadrant};
 use core::simd::prelude::*;
 
 pub(super) fn reduce_medium_f64<const N: usize>(ax: Simd<f64, N>) -> Reduced<N> {

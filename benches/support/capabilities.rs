@@ -1,6 +1,6 @@
 ---cargo
 [package]
-edition = "2021"
+edition = "2024"
 ---
 
 // Compile with default host features so detection happens at runtime.

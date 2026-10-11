@@ -31,7 +31,7 @@
 
 mod data;
 mod zeros;
-use crate::precision::{exp_value, log_dd, madd, Dd};
+use crate::precision::{Dd, exp_value, log_dd, madd};
 use core::simd::prelude::*;
 
 #[inline]

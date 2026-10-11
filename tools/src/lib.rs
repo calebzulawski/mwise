@@ -9,7 +9,10 @@ pub use serialization::{Case, Width};
 pub fn check_bounds(width: Width, op: &str, output: usize, lane: usize, got: f64, case: &Case) {
     let [lower, upper] = case.bounds[output].map(|bits| width.value(bits));
     let context = || {
-        format!("{width:?} {op} output {output} lane {lane}, input {:x?}: got {got:?}, expected [{lower:?}, {upper:?}]", case.input)
+        format!(
+            "{width:?} {op} output {output} lane {lane}, input {:x?}: got {got:?}, expected [{lower:?}, {upper:?}]",
+            case.input
+        )
     };
     if lower.is_nan() {
         assert!(got.is_nan(), "{}", context());

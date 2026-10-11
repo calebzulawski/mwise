@@ -31,7 +31,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-use crate::precision::{exp_dd, Dd};
+use crate::precision::{Dd, exp_dd};
 use core::simd::prelude::*;
 
 /// Computes the hyperbolic sine of `x`.

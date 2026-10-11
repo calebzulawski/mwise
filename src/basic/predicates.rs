@@ -1,9 +1,9 @@
 //! Floating-point classification, comparisons, and total ordering.
 
 use core::simd::{
+    Mask, Select, Simd,
     cmp::{SimdPartialEq, SimdPartialOrd},
     num::{SimdFloat, SimdUint},
-    Mask, Select, Simd,
 };
 
 /// NaN category returned by the `fpclassify` functions.

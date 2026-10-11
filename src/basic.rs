@@ -10,7 +10,7 @@ pub use extrema::*;
 pub use nan::*;
 pub use predicates::*;
 
-use core::simd::{cmp::SimdPartialOrd, num::SimdFloat, Select, Simd};
+use core::simd::{Select, Simd, cmp::SimdPartialOrd, num::SimdFloat};
 
 macro_rules! operation {
     ($doc:literal, $f32:ident, $f64:ident, ($($arg:ident),+), $body:expr) => {

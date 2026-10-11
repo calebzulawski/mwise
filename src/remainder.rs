@@ -30,7 +30,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-use crate::precision::{frexp, scale, Dd};
+use crate::precision::{Dd, frexp, scale};
 use core::simd::prelude::*;
 use std::simd::StdFloat;
 

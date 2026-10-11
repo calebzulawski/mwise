@@ -2,7 +2,7 @@
 mod hardware;
 mod software;
 
-use core::simd::{num::SimdFloat, Simd};
+use core::simd::{Simd, num::SimdFloat};
 
 use crate::backend::RoundingMode;
 

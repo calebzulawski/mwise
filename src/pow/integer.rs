@@ -29,7 +29,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-use crate::precision::{exp_value, log1p_dd, log_float_dd, madd, Dd};
+use crate::precision::{Dd, exp_value, log_float_dd, log1p_dd, madd};
 use core::simd::prelude::*;
 
 // Binary exponentiation is a project extension of the SLEEF-derived kernels.

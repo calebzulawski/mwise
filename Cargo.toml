@@ -1,13 +1,12 @@
 [package]
 name = "mwise"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 license = "MIT"
 
 [workspace]
 members = ["tools"]
 default-members = ["."]
-resolver = "2"
 
 [features]
 # Use software math implementations even when the target supports hardware math.

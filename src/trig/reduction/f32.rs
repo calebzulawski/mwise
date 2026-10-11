@@ -21,7 +21,7 @@
 
 use super::super::data::*;
 use super::large_f32::reduce_large_f32;
-use super::{round_quadrant, Reduced};
+use super::{Reduced, round_quadrant};
 use core::simd::prelude::*;
 
 pub(crate) fn reduce_f32<const N: usize>(ax: Simd<f64, N>, bits: Simd<u64, N>) -> Reduced<N> {

@@ -1,11 +1,11 @@
 //! MPFR references for transcendental tests.
 
 use crate::{Case, Width};
-use rug::ops::{PowAssignRound, RemAssignRound};
 use rug::Assign;
+use rug::ops::{PowAssignRound, RemAssignRound};
 use rug::{
-    float::{Round, Special},
     Float,
+    float::{Round, Special},
 };
 
 pub const PRECISION: u32 = 768;

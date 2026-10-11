@@ -1,6 +1,6 @@
 //! Generate erf values and derivatives at exact dyadic centers.
 use mwise_tools::oracle::PRECISION;
-use rug::{float::Constant, Float};
+use rug::{Float, float::Constant};
 
 fn main() {
     println!("// Generated erf values and derivatives using {PRECISION}-bit MPFR arithmetic.");

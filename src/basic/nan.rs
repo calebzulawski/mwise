@@ -1,9 +1,9 @@
 //! NaN canonicalization and payload operations.
 
 use core::simd::{
+    Mask, Select, Simd,
     cmp::{SimdPartialEq, SimdPartialOrd},
     num::{SimdFloat, SimdUint},
-    Mask, Select, Simd,
 };
 
 macro_rules! nan_payload {

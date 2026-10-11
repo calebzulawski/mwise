@@ -1,6 +1,6 @@
 #![feature(portable_simd)]
 
-use mwise_tools::{serialization::cases, Width};
+use mwise_tools::{Width, serialization::cases};
 
 macro_rules! transcendental_tests {
     ($($op:ident $args:tt => $outputs:expr;)+) => {

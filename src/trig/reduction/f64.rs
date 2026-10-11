@@ -1,8 +1,8 @@
 // Local SIMD routing between the medium and large f64 reducers.
 
+use super::Reduced;
 use super::large_f64::reduce_large_f64;
 use super::medium_f64::reduce_medium_f64;
-use super::Reduced;
 
 use core::simd::prelude::*;
 

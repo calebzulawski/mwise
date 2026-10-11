@@ -1,6 +1,6 @@
 #![feature(portable_simd)]
 
-use mwise_tools::{oracle, Case, Width};
+use mwise_tools::{Case, Width, oracle};
 use proptest::{
     prelude::*,
     test_runner::{Config, TestRunner},

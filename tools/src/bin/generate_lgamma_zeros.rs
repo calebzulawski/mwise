@@ -1,6 +1,6 @@
 //! Generate local Taylor expansions around negative zeros of lgamma.
 
-use rug::{ops::Pow, Float};
+use rug::{Float, ops::Pow};
 
 // Near a pole, an exactly representable leading coefficient can leave a
 // residual hundreds of digits smaller. Retain that residual before splitting.
@@ -24,7 +24,8 @@ fn bisect(mut a: Float, mut b: Float) -> f64 {
             b = mid;
         }
     }
-    (Float::with_val(PRECISION, a + b) / 2_u32).to_f64()
+    let midpoint = Float::with_val(PRECISION, a + b) / 2_u32;
+    midpoint.to_f64()
 }
 
 fn split(value: Float) -> [f64; 2] {

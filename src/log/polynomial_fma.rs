@@ -6,5 +6,5 @@ mod log10;
 mod log2;
 
 pub(crate) use log::log_f32;
-pub(crate) use log10::log10_f32;
 pub(crate) use log2::log2_f32;
+pub(crate) use log10::log10_f32;

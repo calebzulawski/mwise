@@ -1,9 +1,9 @@
 //! Operations on adjacent representable floating-point values.
 
 use core::simd::{
+    Select, Simd,
     cmp::{SimdPartialEq, SimdPartialOrd},
     num::SimdFloat,
-    Select, Simd,
 };
 
 use super::nan::{canonicalize_f32, canonicalize_f64};
