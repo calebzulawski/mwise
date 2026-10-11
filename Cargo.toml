@@ -3,6 +3,9 @@ name = "mwise"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
+description = "mwise provides portable vectorized elementwise implementations of basic libm functions"
+repository = "https://github.com/calebzulawski/mwise"
+categories = ["mathematics", "hardware-support"]
 
 [workspace]
 members = ["tools"]
