@@ -4,7 +4,7 @@ mod software;
 
 use core::simd::Simd;
 
-/// Computes the correctly rounded fused multiply-add x*y+z for each lane.
+/// Computes `x * y + z`, rounding only once to the result type.
 #[inline]
 pub fn fma_f32<const N: usize>(x: Simd<f32, N>, y: Simd<f32, N>, z: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -14,7 +14,7 @@ pub fn fma_f32<const N: usize>(x: Simd<f32, N>, y: Simd<f32, N>, z: Simd<f32, N>
     }
 }
 
-/// Computes the correctly rounded fused multiply-add x*y+z for each lane.
+/// Computes `x * y + z`, rounding only once to the result type.
 #[inline]
 pub fn fma_f64<const N: usize>(x: Simd<f64, N>, y: Simd<f64, N>, z: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {

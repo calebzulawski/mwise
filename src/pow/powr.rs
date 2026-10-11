@@ -31,8 +31,9 @@ use core::simd::prelude::*;
 
 macro_rules! powr {
     ($function:ident, $kind:ident, $pow:path) => {
-        /// Computes exp(y*ln(x)) for each lane.
-        /// Negative x, 0^0, infinity^0, 1^infinity, and NaN inputs give NaN.
+        /// Computes `x` raised to the power `y` as `exp(y * ln(x))`.
+        ///
+        /// Accuracy target: at most 4 ULP.
         #[inline]
         pub fn $function<const N: usize>(x: Simd<$kind, N>, y: Simd<$kind, N>) -> Simd<$kind, N> {
             if (x.simd_gt(Simd::splat(0.0)) & x.is_finite() & y.is_finite()).all() {

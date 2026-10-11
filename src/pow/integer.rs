@@ -129,8 +129,9 @@ fn integer_dd<const N: usize>(n: Simd<i64, N>) -> Dd<N> {
     Dd::from(hi).add_float(lo).normalize()
 }
 
-/// Computes x raised to the signed 64-bit integer n for each lane.
-/// Negative bases and signed zeros retain their sign for odd n; n=0 returns 1.
+/// Computes `x` raised to the integer power `n`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn pown_f64<const N: usize>(x: Simd<f64, N>, n: Simd<i64, N>) -> Simd<f64, N> {
     if small_power_domain::<N, 32>(x.abs(), n) {
@@ -173,8 +174,9 @@ fn finish_pown<const N: usize>(
     n.simd_eq(Simd::splat(0)).select(Simd::splat(1.0), result)
 }
 
-/// Computes x raised to the signed 64-bit integer n for each lane.
-/// Negative bases and signed zeros retain their sign for odd n; n=0 returns 1.
+/// Computes `x` raised to the integer power `n`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn pown_f32<const N: usize>(x: Simd<f32, N>, n: Simd<i64, N>) -> Simd<f32, N> {
     if (n.simd_ge(Simd::splat(-128)) & n.simd_le(Simd::splat(128))).all() {
@@ -197,8 +199,9 @@ fn pown_large_f32<const N: usize>(x: Simd<f64, N>, n: Simd<i64, N>) -> Simd<f64,
     finish_pown(x, n, crate::exp_f64(crate::log_f64(a) * n.cast::<f64>()))
 }
 
-/// Computes the principal nth root for each lane, using a signed 64-bit n.
-/// Negative n gives the reciprocal root. Zero n and negative x with even n give NaN.
+/// Computes the real `n`th root of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn rootn_f64<const N: usize>(x: Simd<f64, N>, n: Simd<i64, N>) -> Simd<f64, N> {
     let ax = x.abs();
@@ -238,8 +241,9 @@ fn finish_rootn<const N: usize>(
         .select(Simd::splat(f64::NAN), result)
 }
 
-/// Computes the principal nth root for each lane, using a signed 64-bit n.
-/// Negative n gives the reciprocal root. Zero n and negative x with even n give NaN.
+/// Computes the real `n`th root of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn rootn_f32<const N: usize>(x: Simd<f32, N>, n: Simd<i64, N>) -> Simd<f32, N> {
     let x = x.cast::<f64>();
@@ -255,8 +259,9 @@ pub fn rootn_f32<const N: usize>(x: Simd<f32, N>, n: Simd<i64, N>) -> Simd<f32, 
     .cast()
 }
 
-/// Computes (1+x) raised to the signed 64-bit integer n for each lane.
-/// Retains small x even when 1+x rounds to 1. Inputs below -1 give NaN.
+/// Computes `(1 + x)` raised to the integer power `n`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn compoundn_f64<const N: usize>(x: Simd<f64, N>, n: Simd<i64, N>) -> Simd<f64, N> {
     let base = Dd::from(x).add_float(Simd::splat(1.0)).normalize();
@@ -296,8 +301,9 @@ fn finish_compoundn<const N: usize>(
         .select(Simd::splat(f64::NAN), result)
 }
 
-/// Computes (1+x) raised to the signed 64-bit integer n for each lane.
-/// Retains small x even when 1+x rounds to 1. Inputs below -1 give NaN.
+/// Computes `(1 + x)` raised to the integer power `n`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn compoundn_f32<const N: usize>(x: Simd<f32, N>, n: Simd<i64, N>) -> Simd<f32, N> {
     if (n.simd_ge(Simd::splat(-128)) & n.simd_le(Simd::splat(128))).all() {

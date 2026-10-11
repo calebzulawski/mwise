@@ -29,28 +29,28 @@ macro_rules! operation {
 }
 
 operation!(
-    "Computes the absolute value of each lane.",
+    "Computes the absolute value of `x`.",
     fabs_f32,
     fabs_f64,
     (x),
     x.abs()
 );
 operation!(
-    "Returns the magnitude of x with the sign of y for each lane.",
+    "Returns a value with the magnitude of `x` and the sign of `y`.",
     copysign_f32,
     copysign_f64,
     (x, y),
     x.copysign(y)
 );
 operation!(
-    "Returns the smaller value for each lane, returning the other value if one is NaN.",
+    "Returns the smaller numeric value of `x` and `y`.",
     fmin_f32,
     fmin_f64,
     (x, y),
     x.simd_min(y)
 );
 operation!(
-    "Returns the larger value for each lane, returning the other value if one is NaN.",
+    "Returns the larger numeric value of `x` and `y`.",
     fmax_f32,
     fmax_f64,
     (x, y),
@@ -58,7 +58,7 @@ operation!(
 );
 
 operation!(
-    "Returns x-y when x > y and positive zero otherwise; propagates NaNs.",
+    "Computes the positive difference of `x` and `y`.",
     fdim_f32,
     fdim_f64,
     (x, y),
@@ -67,8 +67,7 @@ operation!(
 
 macro_rules! modf {
     ($function:ident, $kind:ident, $trunc:path, $canonicalize:ident) => {
-        /// Splits each lane into (fractional part, integer part), both with the input's sign.
-        /// Infinities have a signed-zero fractional part; NaNs produce two quiet NaNs.
+        /// Splits `x` into signed fractional and integral parts, returning `(fractional, integral)`.
         #[inline]
         pub fn $function<const N: usize>(x: Simd<$kind, N>) -> (Simd<$kind, N>, Simd<$kind, N>) {
             let integer = $trunc($canonicalize(x));

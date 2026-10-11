@@ -45,7 +45,9 @@ const COEFFICIENTS: [f64; 10] = [
     0.166666666666666851703837,
 ];
 
-/// Computes exp(x)-1 for each lane, preserving accuracy for small x.
+/// Computes the base-e exponential of `x`, minus one.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn expm1_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let regular = x.simd_ge(Simd::splat(-37.5)) & x.simd_le(Simd::splat(709.782712893384));
@@ -81,7 +83,9 @@ pub fn expm1_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     regular.select(ret, exceptional)
 }
 
-/// Computes exp(x)-1 for each lane, preserving accuracy for small x.
+/// Computes the base-e exponential of `x`, minus one.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn expm1_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let regular = x.simd_ge(Simd::splat(-18.0)) & x.simd_le(Simd::splat(88.72283));

@@ -177,36 +177,31 @@ fn reduce<const N: usize, const NEAREST: bool, const QUOTIENT: bool>(
     valid.select(result, exceptional)
 }
 
-/// Computes x-y*trunc(x/y) exactly for each lane, including overflowing ratios.
+/// Computes the floating-point remainder of `x / y`, with the quotient truncated toward zero.
 #[inline]
 pub fn fmod_f64<const N: usize>(x: Simd<f64, N>, y: Simd<f64, N>) -> Simd<f64, N> {
     reduce::<N, false, false>(x, y, &mut Simd::splat(0))
 }
 
-/// Computes the IEEE remainder, choosing the nearest even integer quotient.
+/// Computes the ISO/IEC 60559 remainder of `x / y`.
 #[inline]
 pub fn remainder_f64<const N: usize>(x: Simd<f64, N>, y: Simd<f64, N>) -> Simd<f64, N> {
     reduce::<N, true, false>(x, y, &mut Simd::splat(0))
 }
 
-/// Computes x-y*trunc(x/y) exactly for each lane, including overflowing ratios.
+/// Computes the floating-point remainder of `x / y`, with the quotient truncated toward zero.
 #[inline]
 pub fn fmod_f32<const N: usize>(x: Simd<f32, N>, y: Simd<f32, N>) -> Simd<f32, N> {
     reduce_f32::<N, false, false>(x, y, &mut Simd::splat(0))
 }
 
-/// Computes the IEEE remainder, choosing the nearest even integer quotient.
+/// Computes the ISO/IEC 60559 remainder of `x / y`.
 #[inline]
 pub fn remainder_f32<const N: usize>(x: Simd<f32, N>, y: Simd<f32, N>) -> Simd<f32, N> {
     reduce_f32::<N, true, false>(x, y, &mut Simd::splat(0))
 }
 
-/// Returns the IEEE remainder and the signed low three bits of the quotient.
-///
-/// The quotient is rounded to the nearest integer, with ties to even. Its
-/// returned magnitude is modulo 8 and its sign follows x/y. Invalid inputs
-/// return a NaN remainder and a zero quotient; finite x and infinite y return
-/// x and a zero quotient. A zero remainder preserves the sign of x.
+/// Computes the ISO/IEC 60559 remainder and signed low three bits of the quotient.
 #[inline]
 pub fn remquo_f64<const N: usize>(
     x: Simd<f64, N>,
@@ -217,12 +212,7 @@ pub fn remquo_f64<const N: usize>(
     (remainder, quotient)
 }
 
-/// Returns the IEEE remainder and the signed low three bits of the quotient.
-///
-/// The quotient is rounded to the nearest integer, with ties to even. Its
-/// returned magnitude is modulo 8 and its sign follows x/y. Invalid inputs
-/// return a NaN remainder and a zero quotient; finite x and infinite y return
-/// x and a zero quotient. A zero remainder preserves the sign of x.
+/// Computes the ISO/IEC 60559 remainder and signed low three bits of the quotient.
 #[inline]
 pub fn remquo_f32<const N: usize>(
     x: Simd<f32, N>,

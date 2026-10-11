@@ -69,7 +69,7 @@ extremum_kernel!(extremum_f32, f32, totalorder_f32, canonicalize_f32);
 extremum_kernel!(extremum_f64, f64, totalorder_f64, canonicalize_f64);
 
 extremum!(
-    "Returns the maximum for each lane, ordering -0 below +0 and propagating NaNs.",
+    "Returns the maximum of `x` and `y`.",
     fmaximum_f32,
     fmaximum_f64,
     maximum = true,
@@ -77,7 +77,7 @@ extremum!(
     magnitude = false
 );
 extremum!(
-    "Returns the minimum for each lane, ordering -0 below +0 and propagating NaNs.",
+    "Returns the minimum of `x` and `y`.",
     fminimum_f32,
     fminimum_f64,
     maximum = false,
@@ -85,7 +85,7 @@ extremum!(
     magnitude = false
 );
 extremum!(
-    "Returns the larger-magnitude value; ties choose the maximum, and NaNs propagate.",
+    "Returns the argument of greater magnitude, choosing the maximum on ties.",
     fmaximum_mag_f32,
     fmaximum_mag_f64,
     maximum = true,
@@ -93,7 +93,7 @@ extremum!(
     magnitude = true
 );
 extremum!(
-    "Returns the smaller-magnitude value; ties choose the minimum, and NaNs propagate.",
+    "Returns the argument of lesser magnitude, choosing the minimum on ties.",
     fminimum_mag_f32,
     fminimum_mag_f64,
     maximum = false,
@@ -101,7 +101,7 @@ extremum!(
     magnitude = true
 );
 extremum!(
-    "Returns the numeric maximum, ordering -0 below +0; ignores a single NaN.",
+    "Returns the maximum of the numeric arguments.",
     fmaximum_num_f32,
     fmaximum_num_f64,
     maximum = true,
@@ -109,7 +109,7 @@ extremum!(
     magnitude = false
 );
 extremum!(
-    "Returns the numeric minimum, ordering -0 below +0; ignores a single NaN.",
+    "Returns the minimum of the numeric arguments.",
     fminimum_num_f32,
     fminimum_num_f64,
     maximum = false,
@@ -117,7 +117,7 @@ extremum!(
     magnitude = false
 );
 extremum!(
-    "Returns the numeric larger-magnitude value; ties choose the maximum, and a single NaN is ignored.",
+    "Returns the numeric argument of greater magnitude, choosing the maximum on ties.",
     fmaximum_mag_num_f32,
     fmaximum_mag_num_f64,
     maximum = true,
@@ -125,7 +125,7 @@ extremum!(
     magnitude = true
 );
 extremum!(
-    "Returns the numeric smaller-magnitude value; ties choose the minimum, and a single NaN is ignored.",
+    "Returns the numeric argument of lesser magnitude, choosing the minimum on ties.",
     fminimum_mag_num_f32,
     fminimum_mag_num_f64,
     maximum = false,

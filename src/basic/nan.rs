@@ -8,16 +8,14 @@ use core::simd::{
 
 macro_rules! nan_payload {
     ($canonicalize:ident, $getpayload:ident, $setpayload:ident, $setpayloadsig:ident, $kind:ident, $bits:ty, $mask:ty) => {
-        /// Returns each input unchanged, except signaling NaNs are made quiet.
-        /// NaN signs and payloads are preserved.
+        /// Produces a canonical representation of `x`, quieting signaling NaNs.
         #[inline]
         pub fn $canonicalize<const N: usize>(x: Simd<$kind, N>) -> Simd<$kind, N> {
             let quiet = Simd::splat((1 as $bits) << ($kind::MANTISSA_DIGITS - 2));
             Simd::from_bits(x.is_nan().select(x.to_bits() | quiet, x.to_bits()))
         }
 
-        /// Extracts the NaN payload as a nonnegative floating-point integer.
-        /// Non-NaN inputs return -1; the sign and quiet bit are not part of the payload.
+        /// Extracts the payload of a quiet or signaling NaN as a nonnegative floating-point integer.
         #[inline]
         pub fn $getpayload<const N: usize>(x: Simd<$kind, N>) -> Simd<$kind, N> {
             let payload = ((1 as $bits) << ($kind::MANTISSA_DIGITS - 2)) - 1;
@@ -27,9 +25,7 @@ macro_rules! nan_payload {
             )
         }
 
-        /// Creates positive quiet NaNs from integer payloads in [0, 2^(p-2)).
-        /// Here p is `MANTISSA_DIGITS`. Returns the values and a success mask;
-        /// invalid lanes return positive zero and false.
+        /// Creates a positive quiet NaN with the given payload, returning `(value, success_mask)`.
         #[inline]
         pub fn $setpayload<const N: usize>(
             payload: Simd<$kind, N>,
@@ -43,9 +39,7 @@ macro_rules! nan_payload {
             (valid.select(nan, Simd::splat(0.0)), valid)
         }
 
-        /// Creates positive signaling NaNs from integer payloads in [1, 2^(p-2)).
-        /// Here p is `MANTISSA_DIGITS`. Returns the values and a success mask;
-        /// invalid lanes return positive zero and false.
+        /// Creates a positive signaling NaN with the given payload, returning `(value, success_mask)`.
         #[inline]
         pub fn $setpayloadsig<const N: usize>(
             payload: Simd<$kind, N>,

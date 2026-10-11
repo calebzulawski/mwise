@@ -1,10 +1,10 @@
-//! Portable SIMD implementations of basic mathematical functions.
+//! A portable, vectorized, elementwise implementation of libm for `f32` and `f64`.
 //!
-//! Arithmetic assumes round-to-nearest, ties-to-even. Transcendental functions
-//! target at most 4 ULP; rounding, square root, fused multiply-add, and remainders
-//! target correctly rounded results. Tests cover signed zeros and exceptional
-//! values; floating-point exception flags are not specified. NaN payloads are
-//! specified only by the payload functions and `canonicalize`.
+//! The functions follow [C23](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf)
+//! (`<math.h>` and Annex F), with [`sincos_f32`] and [`sincos_f64`] implementing
+//! the [GNU `sincos` extension](https://www.gnu.org/software/libc/manual/html_node/Trig-Functions.html).
+//!
+//! Approximate functions target at most 4 ULP error.
 #![feature(portable_simd)]
 
 mod backend;

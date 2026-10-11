@@ -24,7 +24,9 @@ const USE_TABLE_NON_FMA_F64: bool = cfg!(any(
     target_arch = "wasm64"
 ));
 
-/// Computes the natural logarithm for each lane.
+/// Computes the natural logarithm of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn log_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -34,7 +36,9 @@ pub fn log_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes the natural logarithm for each lane.
+/// Computes the natural logarithm of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn log_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -46,7 +50,9 @@ pub fn log_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes the base-two logarithm for each lane.
+/// Computes the base-2 logarithm of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn log2_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -56,7 +62,9 @@ pub fn log2_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes the base-two logarithm for each lane.
+/// Computes the base-2 logarithm of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn log2_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -68,7 +76,9 @@ pub fn log2_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes the base-ten logarithm for each lane.
+/// Computes the base-10 logarithm of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn log10_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -78,7 +88,9 @@ pub fn log10_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes the base-ten logarithm for each lane.
+/// Computes the base-10 logarithm of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn log10_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -88,7 +100,9 @@ pub fn log10_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes ln(1+x) for each lane.
+/// Computes the natural logarithm of `1 + x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn log1p_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -98,7 +112,9 @@ pub fn log1p_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes ln(1+x) for each lane.
+/// Computes the natural logarithm of `1 + x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn log1p_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {

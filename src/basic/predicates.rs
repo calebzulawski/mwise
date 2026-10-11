@@ -34,91 +34,91 @@ macro_rules! predicate {
 }
 
 predicate!(
-    "Tests whether each lane is finite.",
+    "Tests whether `x` is finite.",
     isfinite_f32,
     isfinite_f64,
     (x),
     x.is_finite()
 );
 predicate!(
-    "Tests whether each lane is positive or negative infinity.",
+    "Tests whether `x` is infinite.",
     isinf_f32,
     isinf_f64,
     (x),
     x.is_infinite()
 );
 predicate!(
-    "Tests whether each lane is NaN.",
+    "Tests whether `x` is a NaN.",
     isnan_f32,
     isnan_f64,
     (x),
     x.is_nan()
 );
 predicate!(
-    "Tests whether each lane is normal, excluding zeros, subnormals, infinities, and NaNs.",
+    "Tests whether `x` is a normal floating-point value.",
     isnormal_f32,
     isnormal_f64,
     (x),
     x.is_normal()
 );
 predicate!(
-    "Tests whether each lane is subnormal.",
+    "Tests whether `x` is subnormal.",
     issubnormal_f32,
     issubnormal_f64,
     (x),
     x.is_subnormal()
 );
 predicate!(
-    "Tests the sign bit of each lane, including zeros and NaNs.",
+    "Tests whether the sign of `x` is negative.",
     signbit_f32,
     signbit_f64,
     (x),
     x.is_sign_negative()
 );
 predicate!(
-    "Tests whether each lane is positive or negative zero.",
+    "Tests whether `x` is zero.",
     iszero_f32,
     iszero_f64,
     (x),
     x.simd_eq(Simd::splat(0.0))
 );
 predicate!(
-    "Tests whether x is greater than y for each lane; NaNs compare false.",
+    "Tests whether `x > y`.",
     isgreater_f32,
     isgreater_f64,
     (x, y),
     x.simd_gt(y)
 );
 predicate!(
-    "Tests whether x is greater than or equal to y for each lane; NaNs compare false.",
+    "Tests whether `x >= y`.",
     isgreaterequal_f32,
     isgreaterequal_f64,
     (x, y),
     x.simd_ge(y)
 );
 predicate!(
-    "Tests whether x is less than y for each lane; NaNs compare false.",
+    "Tests whether `x < y`.",
     isless_f32,
     isless_f64,
     (x, y),
     x.simd_lt(y)
 );
 predicate!(
-    "Tests whether x is less than or equal to y for each lane; NaNs compare false.",
+    "Tests whether `x <= y`.",
     islessequal_f32,
     islessequal_f64,
     (x, y),
     x.simd_le(y)
 );
 predicate!(
-    "Tests whether x is less than or greater than y for each lane; NaNs compare false.",
+    "Tests whether `x < y` or `x > y`.",
     islessgreater_f32,
     islessgreater_f64,
     (x, y),
     x.simd_lt(y) | x.simd_gt(y)
 );
 predicate!(
-    "Tests whether either argument is NaN for each lane.",
+    "Tests whether `x` and `y` are unordered.",
     isunordered_f32,
     isunordered_f64,
     (x, y),
@@ -127,11 +127,7 @@ predicate!(
 
 macro_rules! classification {
     ($classify:ident, $signaling:ident, $kind:ident, $mask:ty) => {
-        /// Returns an `FP_*` category code for each lane with the input's element width.
-        ///
-        /// The codes are [`FP_NAN`], [`FP_INFINITE`], [`FP_ZERO`],
-        /// [`FP_SUBNORMAL`], and [`FP_NORMAL`].
-        /// Use `Simd::splat(FP_NORMAL as _)` to construct a comparison vector.
+        /// Classifies `x` as [`FP_NAN`], [`FP_INFINITE`], [`FP_ZERO`], [`FP_SUBNORMAL`], or [`FP_NORMAL`].
         #[inline]
         pub fn $classify<const N: usize>(x: Simd<$kind, N>) -> Simd<$mask, N> {
             let category = x.simd_eq(Simd::splat(0.0)).select(
@@ -147,7 +143,7 @@ macro_rules! classification {
             x.is_nan().select(Simd::splat(FP_NAN as $mask), category)
         }
 
-        /// Tests whether each lane is a signaling NaN by inspecting its bits.
+        /// Tests whether `x` is a signaling NaN.
         #[inline]
         pub fn $signaling<const N: usize>(x: Simd<$kind, N>) -> Mask<$mask, N> {
             let bits = x.to_bits();
@@ -168,8 +164,7 @@ classification!(fpclassify_f64, issignaling_f64, f64, i64);
 
 macro_rules! total_order {
     ($order:ident, $magnitude:ident, $kind:ident, $mask:ty) => {
-        /// Tests whether x precedes or equals y in IEEE 754 total order for each lane.
-        /// Includes signed zeros and NaN signs, signaling bits, and payloads.
+        /// Tests whether `x` precedes or equals `y` in the ISO/IEC 60559 total order.
         #[inline]
         pub fn $order<const N: usize>(x: Simd<$kind, N>, y: Simd<$kind, N>) -> Mask<$mask, N> {
             // TODO: Use SIMD total_cmp once portable SIMD provides it.
@@ -183,8 +178,7 @@ macro_rules! total_order {
             x.simd_le(y)
         }
 
-        /// Tests whether the magnitude of x precedes or equals that of y in IEEE 754 total order.
-        /// Ignores signs, including those of zeros and NaNs.
+        /// Tests whether `|x|` precedes or equals `|y|` in the ISO/IEC 60559 total order.
         #[inline]
         pub fn $magnitude<const N: usize>(x: Simd<$kind, N>, y: Simd<$kind, N>) -> Mask<$mask, N> {
             let x = x.abs().to_bits().cast::<$mask>();

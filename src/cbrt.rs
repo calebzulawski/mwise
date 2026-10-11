@@ -32,7 +32,9 @@
 use crate::precision::{frexp, madd, madd_f32, polynomial};
 use core::simd::prelude::*;
 
-/// Computes the real cube root for each lane, including negative inputs.
+/// Computes the real cube root of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn cbrt_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let regular = x.is_finite() & x.simd_ne(Simd::splat(0.0));
@@ -67,7 +69,9 @@ pub fn cbrt_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     regular.select(y, x)
 }
 
-/// Computes the real cube root for each lane, including negative inputs.
+/// Computes the real cube root of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn cbrt_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let regular = x.is_finite() & x.simd_ne(Simd::splat(0.0));

@@ -244,7 +244,9 @@ fn zero_series<const N: usize>(x: Simd<f64, N>, zero: &zeros::Zero) -> Simd<f64,
     p.value()
 }
 
-/// Computes Gamma(x) for each lane. Negative integer poles return NaN.
+/// Computes the gamma function of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn tgamma_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let finite = regular(x);
@@ -281,7 +283,9 @@ fn correct_f32_near_zero<const N: usize>(x: Simd<f64, N>, value: Simd<f64, N>) -
     near_zero.select(lgamma_f64(x), value)
 }
 
-/// Computes log(abs(Gamma(x))) for each lane, without global sign state.
+/// Computes the natural logarithm of the absolute value of the gamma function of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn lgamma_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let finite = regular(x);
@@ -297,7 +301,9 @@ pub fn lgamma_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     finite.select(value, x.is_nan().select(x + x, Simd::splat(f64::INFINITY)))
 }
 
-/// Computes Gamma(x) for each lane. Negative integer poles return NaN.
+/// Computes the gamma function of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn tgamma_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let a = x.cast::<f64>();
@@ -315,7 +321,9 @@ pub fn tgamma_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
         .select(result, x.is_nan().select(x + x, exceptional))
 }
 
-/// Computes log(abs(Gamma(x))) for each lane, without global sign state.
+/// Computes the natural logarithm of the absolute value of the gamma function of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn lgamma_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let a = x.cast::<f64>();

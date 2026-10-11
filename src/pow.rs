@@ -39,7 +39,9 @@ pub use powr::{powr_f32, powr_f64};
 use crate::precision::{exp_value, log_float_dd};
 use core::simd::prelude::*;
 
-/// Computes x raised to y for each lane, including integer powers of negative x.
+/// Computes `x` raised to the power `y`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn pow_f64<const N: usize>(x: Simd<f64, N>, y: Simd<f64, N>) -> Simd<f64, N> {
     let ax = x.abs();
@@ -72,7 +74,9 @@ pub fn pow_f64<const N: usize>(x: Simd<f64, N>, y: Simd<f64, N>) -> Simd<f64, N>
     (y.simd_eq(Simd::splat(0.0)) | x.simd_eq(Simd::splat(1.0))).select(Simd::splat(1.0), result)
 }
 
-/// Computes x raised to y for each lane, including integer powers of negative x.
+/// Computes `x` raised to the power `y`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn pow_f32<const N: usize>(x: Simd<f32, N>, y: Simd<f32, N>) -> Simd<f32, N> {
     let ax = x.abs();

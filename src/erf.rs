@@ -81,13 +81,17 @@ fn complementary<const N: usize, const EXTRA_PRECISION: bool>(a: Simd<f64, N>) -
     mid.select(middle, tail)
 }
 
-/// Computes the error function for each lane.
+/// Computes the error function of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn erf_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     table::erf(x)
 }
 
-/// Computes 1-erf(x) for each lane, retaining accuracy in the positive tail.
+/// Computes the complementary error function of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn erfc_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     erfc::<N, true>(x)
@@ -111,7 +115,9 @@ fn erfc<const N: usize, const EXTRA_PRECISION: bool>(x: Simd<f64, N>) -> Simd<f6
     x.is_nan().select(x + x, value)
 }
 
-/// Computes the error function for each lane.
+/// Computes the error function of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn erf_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let ax = x.abs();
@@ -132,7 +138,9 @@ pub fn erf_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     x.is_nan().select(x + x, value.copysign(x))
 }
 
-/// Computes 1-erf(x) for each lane, retaining accuracy in the positive tail.
+/// Computes the complementary error function of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn erfc_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let ax = x.abs();

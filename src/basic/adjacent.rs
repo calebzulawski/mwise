@@ -10,8 +10,7 @@ use super::nan::{canonicalize_f32, canonicalize_f64};
 
 macro_rules! adjacent_values {
     ($nextup:ident, $nextdown:ident, $nextafter:ident, $canonicalize:ident, $kind:ident) => {
-        /// Returns the next representable value greater than each input.
-        /// Positive infinity is unchanged, and NaNs are made quiet.
+        /// Returns the next representable value above `x`.
         #[inline]
         pub fn $nextup<const N: usize>(x: Simd<$kind, N>) -> Simd<$kind, N> {
             let bits = x.to_bits();
@@ -23,15 +22,13 @@ macro_rules! adjacent_values {
                 .select($canonicalize(x), Simd::from_bits(next))
         }
 
-        /// Returns the next representable value less than each input.
-        /// Negative infinity is unchanged, and NaNs are made quiet.
+        /// Returns the next representable value below `x`.
         #[inline]
         pub fn $nextdown<const N: usize>(x: Simd<$kind, N>) -> Simd<$kind, N> {
             -$nextup(-x)
         }
 
-        /// Steps each x toward y by one representable value; equal inputs return y.
-        /// NaNs propagate and are made quiet.
+        /// Returns the next representable value after `x` in the direction of `y`.
         #[inline]
         pub fn $nextafter<const N: usize>(x: Simd<$kind, N>, y: Simd<$kind, N>) -> Simd<$kind, N> {
             let next = x.simd_lt(y).select($nextup(x), $nextdown(x));

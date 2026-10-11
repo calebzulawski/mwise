@@ -6,7 +6,7 @@ use core::simd::{num::SimdFloat, Simd};
 
 use crate::backend::RoundingMode;
 
-/// Computes rounding toward zero for each lane.
+/// Rounds `x` to an integer value toward zero.
 #[inline]
 pub fn trunc_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_round_f32::<N>(RoundingMode::Directed) {
@@ -16,7 +16,7 @@ pub fn trunc_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes rounding toward zero for each lane.
+/// Rounds `x` to an integer value toward zero.
 #[inline]
 pub fn trunc_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_round_f64::<N>(RoundingMode::Directed) {
@@ -26,7 +26,7 @@ pub fn trunc_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes rounding toward negative infinity for each lane.
+/// Returns the greatest integer value less than or equal to `x`.
 #[inline]
 pub fn floor_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_round_f32::<N>(RoundingMode::Directed) {
@@ -36,7 +36,7 @@ pub fn floor_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes rounding toward negative infinity for each lane.
+/// Returns the greatest integer value less than or equal to `x`.
 #[inline]
 pub fn floor_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_round_f64::<N>(RoundingMode::Directed) {
@@ -46,7 +46,7 @@ pub fn floor_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes rounding toward positive infinity for each lane.
+/// Returns the least integer value greater than or equal to `x`.
 #[inline]
 pub fn ceil_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_round_f32::<N>(RoundingMode::Directed) {
@@ -56,7 +56,7 @@ pub fn ceil_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes rounding toward positive infinity for each lane.
+/// Returns the least integer value greater than or equal to `x`.
 #[inline]
 pub fn ceil_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_round_f64::<N>(RoundingMode::Directed) {
@@ -66,7 +66,7 @@ pub fn ceil_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes rounding to nearest with ties away from zero for each lane.
+/// Rounds `x` to the nearest integer value, with ties away from zero.
 #[inline]
 pub fn round_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_round_f32::<N>(RoundingMode::TiesAway) {
@@ -76,7 +76,7 @@ pub fn round_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes rounding to nearest with ties away from zero for each lane.
+/// Rounds `x` to the nearest integer value, with ties away from zero.
 #[inline]
 pub fn round_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_round_f64::<N>(RoundingMode::TiesAway) {
@@ -86,7 +86,7 @@ pub fn round_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes rounding to nearest with ties to even for each lane.
+/// Rounds `x` to the nearest integer value, with ties to even.
 #[inline]
 pub fn roundeven_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_round_f32::<N>(RoundingMode::TiesEven) {
@@ -96,7 +96,7 @@ pub fn roundeven_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes rounding to nearest with ties to even for each lane.
+/// Rounds `x` to the nearest integer value, with ties to even.
 #[inline]
 pub fn roundeven_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_round_f64::<N>(RoundingMode::TiesEven) {
@@ -106,7 +106,7 @@ pub fn roundeven_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Rounds each lane to the nearest `i32`, with ties away from zero.
+/// Rounds `x` to the nearest integer, with ties away from zero.
 ///
 /// Results outside the integer range (including infinities) saturate to
 /// `i32::MIN` or `i32::MAX`; NaNs produce zero.
@@ -115,7 +115,7 @@ pub fn lround_f32<const N: usize>(x: Simd<f32, N>) -> Simd<i32, N> {
     round_f32(x).cast()
 }
 
-/// Rounds each lane to the nearest `i32`, with ties away from zero.
+/// Rounds `x` to the nearest integer, with ties away from zero.
 ///
 /// Results outside the integer range (including infinities) saturate to
 /// `i32::MIN` or `i32::MAX`; NaNs produce zero.
@@ -124,7 +124,7 @@ pub fn lround_f64<const N: usize>(x: Simd<f64, N>) -> Simd<i32, N> {
     round_f64(x).cast()
 }
 
-/// Rounds each lane to the nearest `i64`, with ties away from zero.
+/// Rounds `x` to the nearest integer, with ties away from zero.
 ///
 /// Results outside the integer range (including infinities) saturate to
 /// `i64::MIN` or `i64::MAX`; NaNs produce zero.
@@ -133,7 +133,7 @@ pub fn llround_f32<const N: usize>(x: Simd<f32, N>) -> Simd<i64, N> {
     round_f32(x).cast()
 }
 
-/// Rounds each lane to the nearest `i64`, with ties away from zero.
+/// Rounds `x` to the nearest integer, with ties away from zero.
 ///
 /// Results outside the integer range (including infinities) saturate to
 /// `i64::MIN` or `i64::MAX`; NaNs produce zero.

@@ -4,7 +4,7 @@ mod software;
 
 use core::simd::Simd;
 
-/// Computes the correctly rounded square root for each lane.
+/// Computes the nonnegative square root of `x`.
 #[inline]
 pub fn sqrt_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_sqrt_f32::<N>() {
@@ -14,7 +14,7 @@ pub fn sqrt_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes the correctly rounded square root for each lane.
+/// Computes the nonnegative square root of `x`.
 #[inline]
 pub fn sqrt_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_sqrt_f64::<N>() {
@@ -24,15 +24,17 @@ pub fn sqrt_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes the reciprocal square root for each lane, targeting at most 4 ULP.
-/// Signed zeros give signed infinities; negative inputs give NaN.
+/// Computes the reciprocal of the nonnegative square root of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn rsqrt_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     Simd::splat(1.0) / sqrt_f32(x)
 }
 
-/// Computes the reciprocal square root for each lane, targeting at most 4 ULP.
-/// Signed zeros give signed infinities; negative inputs give NaN.
+/// Computes the reciprocal of the nonnegative square root of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn rsqrt_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     Simd::splat(1.0) / sqrt_f64(x)

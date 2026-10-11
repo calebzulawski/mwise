@@ -34,7 +34,9 @@
 use crate::precision::{exp_dd, Dd};
 use core::simd::prelude::*;
 
-/// Computes the hyperbolic sine for each lane.
+/// Computes the hyperbolic sine of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn sinh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let ax = x.abs();
@@ -57,7 +59,9 @@ pub fn sinh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     x.is_nan().select(x + x, y)
 }
 
-/// Computes the hyperbolic cosine for each lane.
+/// Computes the hyperbolic cosine of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn cosh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let ax = x.abs();
@@ -78,7 +82,9 @@ pub fn cosh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     x.is_nan().select(x + x, y)
 }
 
-/// Computes the hyperbolic tangent for each lane.
+/// Computes the hyperbolic tangent of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn tanh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let ax = x.abs();
@@ -90,7 +96,9 @@ pub fn tanh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     x.is_nan().select(x + x, y)
 }
 
-/// Computes the inverse hyperbolic sine for each lane.
+/// Computes the inverse hyperbolic sine of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn asinh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let ax = x.abs();
@@ -107,7 +115,9 @@ pub fn asinh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     x.is_nan().select(x + x, y)
 }
 
-/// Computes the inverse hyperbolic cosine for each lane (x >= 1).
+/// Computes the inverse hyperbolic cosine of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn acosh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let a = x.simd_min(Simd::splat(1.0e150));
@@ -123,7 +133,9 @@ pub fn acosh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
         .select(Simd::splat(f64::NAN), x.is_nan().select(x + x, y))
 }
 
-/// Computes the inverse hyperbolic tangent for each lane (|x| <= 1).
+/// Computes the inverse hyperbolic tangent of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn atanh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let ax = x.abs();
@@ -133,7 +145,9 @@ pub fn atanh_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
         .select(Simd::splat(f64::NAN), x.is_nan().select(x + x, y))
 }
 
-/// Computes the hyperbolic sine for each lane.
+/// Computes the hyperbolic sine of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn sinh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let ax = x.abs();
@@ -149,7 +163,9 @@ pub fn sinh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
         .select(x, x.is_nan().select(x + x, y))
 }
 
-/// Computes the hyperbolic cosine for each lane.
+/// Computes the hyperbolic cosine of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn cosh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let ax = x.abs();
@@ -164,7 +180,9 @@ pub fn cosh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     x.is_nan().select(x + x, y)
 }
 
-/// Computes the hyperbolic tangent for each lane.
+/// Computes the hyperbolic tangent of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn tanh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let ax = x.abs();
@@ -177,7 +195,9 @@ pub fn tanh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
         .select(x, x.is_nan().select(x + x, y))
 }
 
-/// Computes the inverse hyperbolic sine for each lane.
+/// Computes the inverse hyperbolic sine of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn asinh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let ax = x.abs();
@@ -194,7 +214,9 @@ pub fn asinh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
         .select(x, x.is_nan().select(x + x, y.copysign(x)))
 }
 
-/// Computes the inverse hyperbolic cosine for each lane (x >= 1).
+/// Computes the inverse hyperbolic cosine of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn acosh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let a = x.simd_min(Simd::splat(1.0e18));
@@ -210,7 +232,9 @@ pub fn acosh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
         .select(Simd::splat(f32::NAN), x.is_nan().select(x + x, y))
 }
 
-/// Computes the inverse hyperbolic tangent for each lane (|x| <= 1).
+/// Computes the inverse hyperbolic tangent of `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn atanh_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     let ax = x.abs();

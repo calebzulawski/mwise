@@ -13,7 +13,9 @@ pub(crate) mod tan_fma;
 
 use core::simd::Simd;
 
-/// Computes sin(x) for each lane.
+/// Computes the sine of the radian angle `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn sin_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -23,7 +25,9 @@ pub fn sin_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes sin(x) for each lane.
+/// Computes the sine of the radian angle `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn sin_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -33,7 +37,9 @@ pub fn sin_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes cos(x) for each lane.
+/// Computes the cosine of the radian angle `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn cos_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -43,7 +49,9 @@ pub fn cos_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes cos(x) for each lane.
+/// Computes the cosine of the radian angle `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn cos_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -53,7 +61,9 @@ pub fn cos_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes (sin(x), cos(x)) for each lane.
+/// Computes the sine and cosine of the radian angle `x`, returning `(sin, cos)`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn sincos_f32<const N: usize>(x: Simd<f32, N>) -> (Simd<f32, N>, Simd<f32, N>) {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -63,7 +73,9 @@ pub fn sincos_f32<const N: usize>(x: Simd<f32, N>) -> (Simd<f32, N>, Simd<f32, N
     }
 }
 
-/// Computes (sin(x), cos(x)) for each lane.
+/// Computes the sine and cosine of the radian angle `x`, returning `(sin, cos)`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn sincos_f64<const N: usize>(x: Simd<f64, N>) -> (Simd<f64, N>, Simd<f64, N>) {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -73,7 +85,9 @@ pub fn sincos_f64<const N: usize>(x: Simd<f64, N>) -> (Simd<f64, N>, Simd<f64, N
     }
 }
 
-/// Computes tan(x) for each lane.
+/// Computes the tangent of the radian angle `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn tan_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -83,7 +97,9 @@ pub fn tan_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes tan(x) for each lane.
+/// Computes the tangent of the radian angle `x`.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn tan_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -93,7 +109,9 @@ pub fn tan_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes asin(x) for each lane.
+/// Computes the principal arc sine of `x`, in radians.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn asin_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -103,7 +121,9 @@ pub fn asin_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes asin(x) for each lane.
+/// Computes the principal arc sine of `x`, in radians.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn asin_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -113,7 +133,9 @@ pub fn asin_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes acos(x) for each lane.
+/// Computes the principal arc cosine of `x`, in radians.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn acos_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -123,7 +145,9 @@ pub fn acos_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes acos(x) for each lane.
+/// Computes the principal arc cosine of `x`, in radians.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn acos_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -133,7 +157,9 @@ pub fn acos_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes atan(x) for each lane.
+/// Computes the principal arc tangent of `x`, in radians.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn atan_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -143,7 +169,9 @@ pub fn atan_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
     }
 }
 
-/// Computes atan(x) for each lane.
+/// Computes the principal arc tangent of `x`, in radians.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn atan_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {
@@ -153,7 +181,9 @@ pub fn atan_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     }
 }
 
-/// Computes atan2(y,x) for each lane.
+/// Computes the arc tangent of `y / x`, in radians, using both signs to determine the quadrant.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn atan2_f32<const N: usize>(y: Simd<f32, N>, x: Simd<f32, N>) -> Simd<f32, N> {
     if crate::backend::use_hardware_fma_f32::<N>() {
@@ -163,7 +193,9 @@ pub fn atan2_f32<const N: usize>(y: Simd<f32, N>, x: Simd<f32, N>) -> Simd<f32, 
     }
 }
 
-/// Computes atan2(y,x) for each lane.
+/// Computes the arc tangent of `y / x`, in radians, using both signs to determine the quadrant.
+///
+/// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn atan2_f64<const N: usize>(y: Simd<f64, N>, x: Simd<f64, N>) -> Simd<f64, N> {
     if crate::backend::use_hardware_fma_f64::<N>() {

@@ -33,7 +33,9 @@ use core::simd::prelude::*;
 
 macro_rules! hypot {
     ($name:ident, $kind:ident, $sqrt:ident, $low:expr, $high:expr) => {
-        /// Computes sqrt(x*x+y*y) without intermediate overflow or underflow.
+        /// Computes `sqrt(x * x + y * y)` without undue intermediate overflow or underflow.
+        ///
+        /// Accuracy target: at most 4 ULP.
         #[inline]
         pub fn $name<const N: usize>(x: Simd<$kind, N>, y: Simd<$kind, N>) -> Simd<$kind, N> {
             let ax = x.abs();
