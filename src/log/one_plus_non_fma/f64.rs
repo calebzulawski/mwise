@@ -28,20 +28,7 @@
 
 use core::simd::prelude::*;
 
-trait UnfusedMulAdd {
-    fn mul_add(self, b: Self, c: Self) -> Self;
-}
-
-impl<T, const N: usize> UnfusedMulAdd for Simd<T, N>
-where
-    T: core::simd::SimdElement,
-    Simd<T, N>: core::ops::Mul<Output = Self> + core::ops::Add<Output = Self>,
-{
-    #[inline]
-    fn mul_add(self, b: Self, c: Self) -> Self {
-        self * b + c
-    }
-}
+use crate::precision::UnfusedMulAdd;
 
 const COEFF_F64: [f64; 19] = [
     f64::from_bits(0xbfdffffffffffffb), // -0x1.ffffffffffffbp-2

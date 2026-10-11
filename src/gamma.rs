@@ -196,13 +196,13 @@ fn kernel<const N: usize>(a: Simd<f64, N>) -> (Dd<N>, Dd<N>) {
 fn regular<const N: usize>(x: Simd<f64, N>) -> Mask<i64, N> {
     // Classification needs only equality to an integer, not truncation.
     // Adding a signed 2^52 rounds smaller magnitudes to integer spacing.
-    let integer =
-        if crate::backend::use_hardware_round_f64::<N>(crate::backend::RoundingMode::Directed) {
-            crate::trunc_f64(x).simd_eq(x)
-        } else {
-            let shift = Simd::splat(4503599627370496.0).copysign(x);
-            ((x + shift) - shift).simd_eq(x) | x.abs().simd_ge(Simd::splat(4503599627370496.0))
-        };
+    let integer = if crate::backend::use_hardware_round_f64(crate::backend::RoundingMode::Directed)
+    {
+        crate::trunc_f64(x).simd_eq(x)
+    } else {
+        let shift = Simd::splat(4503599627370496.0).copysign(x);
+        ((x + shift) - shift).simd_eq(x) | x.abs().simd_ge(Simd::splat(4503599627370496.0))
+    };
     x.is_finite() & x.simd_ne(Simd::splat(0.0)) & !(x.simd_lt(Simd::splat(0.0)) & integer)
 }
 
@@ -254,7 +254,7 @@ pub fn tgamma_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     // Unfused compensation has more temporaries. Combining the logarithms
     // keeps the ratio out of the exponential's register budget on that path,
     // and avoids intermediate overflow or underflow at extreme exponents.
-    let result = if !crate::backend::use_hardware_fma_f64::<N>()
+    let result = if !crate::backend::use_hardware_fma_f64()
         || !logarithm.hi.abs().simd_lt(Simd::splat(700.0)).all()
     {
         let negative = ratio.hi.is_sign_negative();

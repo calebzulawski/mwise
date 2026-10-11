@@ -3,7 +3,7 @@
 
 // Shared by public FMA and the FMA-based log, exp and trig algorithms.
 #[inline]
-pub(crate) const fn use_hardware_fma_f32<const N: usize>() -> bool {
+pub(crate) const fn use_hardware_fma_f32() -> bool {
     if cfg!(feature = "force-soft") {
         return false;
     }
@@ -46,7 +46,7 @@ pub(crate) const fn use_hardware_fma_f32<const N: usize>() -> bool {
 }
 
 #[inline]
-pub(crate) const fn use_hardware_fma_f64<const N: usize>() -> bool {
+pub(crate) const fn use_hardware_fma_f64() -> bool {
     if cfg!(feature = "force-soft") {
         return false;
     }
@@ -87,7 +87,7 @@ pub(crate) const fn use_hardware_fma_f64<const N: usize>() -> bool {
 }
 
 #[inline]
-pub(crate) const fn use_hardware_sqrt_f32<const N: usize>() -> bool {
+pub(crate) const fn use_hardware_sqrt_f32() -> bool {
     if cfg!(feature = "force-soft") {
         return false;
     }
@@ -128,7 +128,7 @@ pub(crate) const fn use_hardware_sqrt_f32<const N: usize>() -> bool {
 }
 
 #[inline]
-pub(crate) const fn use_hardware_sqrt_f64<const N: usize>() -> bool {
+pub(crate) const fn use_hardware_sqrt_f64() -> bool {
     if cfg!(feature = "force-soft") {
         return false;
     }
@@ -179,7 +179,7 @@ pub(crate) enum RoundingMode {
 }
 
 #[inline]
-pub(crate) const fn use_hardware_round_f32<const N: usize>(mode: RoundingMode) -> bool {
+pub(crate) const fn use_hardware_round_f32(mode: RoundingMode) -> bool {
     if cfg!(feature = "force-soft") {
         return false;
     }
@@ -215,7 +215,7 @@ pub(crate) const fn use_hardware_round_f32<const N: usize>(mode: RoundingMode) -
 }
 
 #[inline]
-pub(crate) const fn use_hardware_round_f64<const N: usize>(mode: RoundingMode) -> bool {
+pub(crate) const fn use_hardware_round_f64(mode: RoundingMode) -> bool {
     if cfg!(feature = "force-soft") {
         return false;
     }

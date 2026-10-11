@@ -51,7 +51,7 @@ fn small_erf<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
 }
 
 #[inline]
-fn complementary<const N: usize, const EXTRA_PRECISION: bool>(a: Simd<f64, N>) -> Simd<f64, N> {
+fn complementary<const N: usize>(a: Simd<f64, N>) -> Simd<f64, N> {
     let mid = a.simd_lt(Simd::splat(1.25));
     let s = a - Simd::splat(1.0);
     let middle = Simd::splat(1.0 - ERX) - ratio(s, &PA, &QA);
@@ -71,12 +71,7 @@ fn complementary<const N: usize, const EXTRA_PRECISION: bool>(a: Simd<f64, N>) -
     let exponent = Dd::product(-x, x)
         .add_float(Simd::splat(-0.5625))
         .add_float(numerator / denominator);
-    let tail = if EXTRA_PRECISION {
-        exp_value(exponent) / x
-    } else {
-        let exponential = crate::exp_f64(exponent.hi);
-        madd(exponential, exponent.lo, exponential) / x
-    };
+    let tail = exp_value(exponent) / x;
     let tail = a.simd_ge(Simd::splat(28.0)).select(Simd::splat(0.0), tail);
     mid.select(middle, tail)
 }
@@ -94,11 +89,11 @@ pub fn erf_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
 /// Accuracy target: at most 4 ULP.
 #[inline]
 pub fn erfc_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
-    erfc::<N, true>(x)
+    erfc(x)
 }
 
 #[inline]
-fn erfc<const N: usize, const EXTRA_PRECISION: bool>(x: Simd<f64, N>) -> Simd<f64, N> {
+fn erfc<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
     let ax = x.abs();
     let small = ax.simd_lt(Simd::splat(0.84375));
     let a = ax.simd_min(Simd::splat(0.84375));
@@ -106,10 +101,7 @@ fn erfc<const N: usize, const EXTRA_PRECISION: bool>(x: Simd<f64, N>) -> Simd<f6
     let value = if small.all() {
         near
     } else {
-        small.select(
-            near,
-            complementary::<N, EXTRA_PRECISION>(ax.simd_max(Simd::splat(0.84375))),
-        )
+        small.select(near, complementary(ax.simd_max(Simd::splat(0.84375))))
     };
     let value = x.is_sign_negative().select(Simd::splat(2.0) - value, value);
     x.is_nan().select(x + x, value)

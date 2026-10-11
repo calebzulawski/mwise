@@ -57,16 +57,7 @@
 
 use core::simd::prelude::*;
 
-trait UnfusedMulAdd {
-    fn mul_add(self, b: Self, c: Self) -> Self;
-}
-
-impl<const N: usize> UnfusedMulAdd for Simd<f32, N> {
-    #[inline]
-    fn mul_add(self, b: Self, c: Self) -> Self {
-        self * b + c
-    }
-}
+use crate::precision::UnfusedMulAdd;
 
 const SIN_F32: [f32; 3] = [
     f32::from_bits(0xbe2aaaa3), // -0x1.555546p-3

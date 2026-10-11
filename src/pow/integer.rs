@@ -73,7 +73,7 @@ fn small_power_dd<const N: usize, const MAX: u32>(
         );
     }
     let q = Simd::splat(1.0) / result.hi;
-    let residual = if crate::backend::use_hardware_fma_f64::<N>() {
+    let residual = if crate::backend::use_hardware_fma_f64() {
         madd(-q, result.hi, Simd::splat(1.0))
     } else {
         let product = Dd::product(q, result.hi);

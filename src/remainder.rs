@@ -237,7 +237,7 @@ fn reduce_f32<const N: usize, const NEAREST: bool, const QUOTIENT: bool>(
         return reduce::<N, NEAREST, QUOTIENT>(x.cast(), y.cast(), quotient_out).cast();
     }
     let mut q = crate::trunc_f32(quotient);
-    let mut r = if crate::backend::use_hardware_fma_f32::<N>() {
+    let mut r = if crate::backend::use_hardware_fma_f32() {
         (-q).mul_add(ay, ax)
     } else {
         // A bounded integer times an f32 significand fits exactly in f64.

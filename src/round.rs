@@ -9,7 +9,7 @@ use crate::backend::RoundingMode;
 /// Rounds `x` to an integer value toward zero.
 #[inline]
 pub fn trunc_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
-    if crate::backend::use_hardware_round_f32::<N>(RoundingMode::Directed) {
+    if crate::backend::use_hardware_round_f32(RoundingMode::Directed) {
         hardware::trunc_f32(x)
     } else {
         software::trunc_f32(x)
@@ -19,7 +19,7 @@ pub fn trunc_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
 /// Rounds `x` to an integer value toward zero.
 #[inline]
 pub fn trunc_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
-    if crate::backend::use_hardware_round_f64::<N>(RoundingMode::Directed) {
+    if crate::backend::use_hardware_round_f64(RoundingMode::Directed) {
         hardware::trunc_f64(x)
     } else {
         software::trunc_f64(x)
@@ -29,7 +29,7 @@ pub fn trunc_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
 /// Returns the greatest integer value less than or equal to `x`.
 #[inline]
 pub fn floor_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
-    if crate::backend::use_hardware_round_f32::<N>(RoundingMode::Directed) {
+    if crate::backend::use_hardware_round_f32(RoundingMode::Directed) {
         hardware::floor_f32(x)
     } else {
         software::floor_f32(x)
@@ -39,7 +39,7 @@ pub fn floor_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
 /// Returns the greatest integer value less than or equal to `x`.
 #[inline]
 pub fn floor_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
-    if crate::backend::use_hardware_round_f64::<N>(RoundingMode::Directed) {
+    if crate::backend::use_hardware_round_f64(RoundingMode::Directed) {
         hardware::floor_f64(x)
     } else {
         software::floor_f64(x)
@@ -49,7 +49,7 @@ pub fn floor_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
 /// Returns the least integer value greater than or equal to `x`.
 #[inline]
 pub fn ceil_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
-    if crate::backend::use_hardware_round_f32::<N>(RoundingMode::Directed) {
+    if crate::backend::use_hardware_round_f32(RoundingMode::Directed) {
         hardware::ceil_f32(x)
     } else {
         software::ceil_f32(x)
@@ -59,7 +59,7 @@ pub fn ceil_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
 /// Returns the least integer value greater than or equal to `x`.
 #[inline]
 pub fn ceil_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
-    if crate::backend::use_hardware_round_f64::<N>(RoundingMode::Directed) {
+    if crate::backend::use_hardware_round_f64(RoundingMode::Directed) {
         hardware::ceil_f64(x)
     } else {
         software::ceil_f64(x)
@@ -69,7 +69,7 @@ pub fn ceil_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
 /// Rounds `x` to the nearest integer value, with ties away from zero.
 #[inline]
 pub fn round_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
-    if crate::backend::use_hardware_round_f32::<N>(RoundingMode::TiesAway) {
+    if crate::backend::use_hardware_round_f32(RoundingMode::TiesAway) {
         hardware::round_f32(x)
     } else {
         software::round_f32(x)
@@ -79,7 +79,7 @@ pub fn round_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
 /// Rounds `x` to the nearest integer value, with ties away from zero.
 #[inline]
 pub fn round_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
-    if crate::backend::use_hardware_round_f64::<N>(RoundingMode::TiesAway) {
+    if crate::backend::use_hardware_round_f64(RoundingMode::TiesAway) {
         hardware::round_f64(x)
     } else {
         software::round_f64(x)
@@ -89,7 +89,7 @@ pub fn round_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
 /// Rounds `x` to the nearest integer value, with ties to even.
 #[inline]
 pub fn roundeven_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
-    if crate::backend::use_hardware_round_f32::<N>(RoundingMode::TiesEven) {
+    if crate::backend::use_hardware_round_f32(RoundingMode::TiesEven) {
         hardware::roundeven_f32(x)
     } else {
         software::roundeven_f32(x)
@@ -99,7 +99,7 @@ pub fn roundeven_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
 /// Rounds `x` to the nearest integer value, with ties to even.
 #[inline]
 pub fn roundeven_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
-    if crate::backend::use_hardware_round_f64::<N>(RoundingMode::TiesEven) {
+    if crate::backend::use_hardware_round_f64(RoundingMode::TiesEven) {
         hardware::roundeven_f64(x)
     } else {
         software::roundeven_f64(x)

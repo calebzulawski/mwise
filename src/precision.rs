@@ -33,14 +33,30 @@ use core::simd::prelude::*;
 use std::simd::StdFloat;
 mod log_table;
 
+/// Multiply and add separately in kernels that require unfused arithmetic.
+pub(crate) trait UnfusedMulAdd {
+    fn mul_add(self, multiplier: Self, addend: Self) -> Self;
+}
+
+impl<T, const N: usize> UnfusedMulAdd for Simd<T, N>
+where
+    T: core::simd::SimdElement,
+    Simd<T, N>: core::ops::Mul<Output = Self> + core::ops::Add<Output = Self>,
+{
+    #[inline]
+    fn mul_add(self, multiplier: Self, addend: Self) -> Self {
+        self * multiplier + addend
+    }
+}
+
 #[inline]
 pub(crate) fn madd<const N: usize>(
     a: Simd<f64, N>,
     b: Simd<f64, N>,
     c: Simd<f64, N>,
 ) -> Simd<f64, N> {
-    if crate::backend::use_hardware_fma_f64::<N>() {
-        a.mul_add(b, c)
+    if crate::backend::use_hardware_fma_f64() {
+        StdFloat::mul_add(a, b, c)
     } else {
         a * b + c
     }
@@ -52,8 +68,8 @@ pub(crate) fn madd_f32<const N: usize>(
     b: Simd<f32, N>,
     c: Simd<f32, N>,
 ) -> Simd<f32, N> {
-    if crate::backend::use_hardware_fma_f32::<N>() {
-        a.mul_add(b, c)
+    if crate::backend::use_hardware_fma_f32() {
+        StdFloat::mul_add(a, b, c)
     } else {
         a * b + c
     }
@@ -126,8 +142,8 @@ impl<const N: usize> Dd<N> {
     #[inline]
     pub fn product(a: Simd<f64, N>, b: Simd<f64, N>) -> Self {
         let hi = a * b;
-        let lo = if crate::backend::use_hardware_fma_f64::<N>() {
-            a.mul_add(b, -hi)
+        let lo = if crate::backend::use_hardware_fma_f64() {
+            StdFloat::mul_add(a, b, -hi)
         } else {
             // Bit splitting avoids the overflow of Dekker's multiplying split.
             let ah = Simd::<f64, N>::from_bits(a.to_bits() & Simd::splat(!((1_u64 << 27) - 1)));
@@ -156,8 +172,8 @@ impl<const N: usize> Dd<N> {
     #[inline]
     pub fn div(self, other: Self) -> Self {
         let q = self.hi / other.hi;
-        let residual = if crate::backend::use_hardware_fma_f64::<N>() {
-            (-q).mul_add(other.hi, self.hi)
+        let residual = if crate::backend::use_hardware_fma_f64() {
+            StdFloat::mul_add(-q, other.hi, self.hi)
         } else {
             let p = Self::product(q, other.hi);
             // The high subtraction is exact: q*other.hi is close to self.hi.
@@ -216,7 +232,7 @@ pub(crate) fn polynomial<const N: usize>(x: Simd<f64, N>, coefficients: &[f64]) 
 /// Extra-precision logarithm, including a small low input component.
 #[inline]
 pub(crate) fn log_dd<const N: usize>(d: Dd<N>) -> Dd<N> {
-    if crate::backend::use_hardware_fma_f64::<N>() {
+    if crate::backend::use_hardware_fma_f64() {
         log_series_dd::<N, true>(d)
     } else {
         log_float_dd(d.hi).add_float(d.lo / d.hi).normalize()
@@ -227,7 +243,7 @@ pub(crate) fn log_dd<const N: usize>(d: Dd<N>) -> Dd<N> {
 #[inline]
 pub(crate) fn log1p_dd<const N: usize>(x: Simd<f64, N>) -> Dd<N> {
     let d = Dd::from(x).add_float(Simd::splat(1.0)).normalize();
-    if crate::backend::use_hardware_fma_f64::<N>() {
+    if crate::backend::use_hardware_fma_f64() {
         log_series_dd::<N, true>(d)
     } else {
         // log(hi+lo) = log(hi) + log1p(lo/hi). The normalized low part
@@ -244,7 +260,7 @@ pub(crate) fn log1p_dd<const N: usize>(x: Simd<f64, N>) -> Dd<N> {
 /// next to one have reciprocal 1, preserving tiny logarithms for pow.
 #[inline]
 pub(crate) fn log_float_dd<const N: usize>(x: Simd<f64, N>) -> Dd<N> {
-    if crate::backend::use_hardware_fma_f64::<N>() {
+    if crate::backend::use_hardware_fma_f64() {
         log_series_dd::<N, false>(Dd::from(x))
     } else {
         log_table_dd(x)

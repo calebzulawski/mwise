@@ -28,21 +28,7 @@
 
 use core::simd::prelude::*;
 
-// The non-FMA variant evaluates every multiply and add separately.
-trait UnfusedMulAdd {
-    fn mul_add(self, multiplier: Self, addend: Self) -> Self;
-}
-
-impl<T, const N: usize> UnfusedMulAdd for Simd<T, N>
-where
-    T: core::simd::SimdElement,
-    Simd<T, N>: core::ops::Mul<Output = Self> + core::ops::Add<Output = Self>,
-{
-    #[inline]
-    fn mul_add(self, multiplier: Self, addend: Self) -> Self {
-        self * multiplier + addend
-    }
-}
+use crate::precision::UnfusedMulAdd;
 
 #[inline]
 fn atan_poly_f64<const N: usize>(z: Simd<f64, N>) -> Simd<f64, N> {

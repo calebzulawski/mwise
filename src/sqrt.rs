@@ -7,7 +7,7 @@ use core::simd::Simd;
 /// Computes the nonnegative square root of `x`.
 #[inline]
 pub fn sqrt_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
-    if crate::backend::use_hardware_sqrt_f32::<N>() {
+    if crate::backend::use_hardware_sqrt_f32() {
         hardware::sqrt_f32(x)
     } else {
         software::sqrt_f32(x)
@@ -17,7 +17,7 @@ pub fn sqrt_f32<const N: usize>(x: Simd<f32, N>) -> Simd<f32, N> {
 /// Computes the nonnegative square root of `x`.
 #[inline]
 pub fn sqrt_f64<const N: usize>(x: Simd<f64, N>) -> Simd<f64, N> {
-    if crate::backend::use_hardware_sqrt_f64::<N>() {
+    if crate::backend::use_hardware_sqrt_f64() {
         hardware::sqrt_f64(x)
     } else {
         software::sqrt_f64(x)
