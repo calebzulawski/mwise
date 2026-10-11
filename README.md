@@ -3,7 +3,7 @@ mwise (elementwise libm)
 
 *mwise* provides portable vectorized elementwise implementations of basic libm functions.
 
-See [which functions are implemented](implementation.md) and [benchmarks for the latest commit on master](benchmarks.md).
+See [which functions are implemented](implementation.md) and [benchmarks for the latest commit on master](https://calebzulawski.github.io/mwise/benchmarks/).
 
 ## License
 

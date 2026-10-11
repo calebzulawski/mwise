@@ -1,25 +1,39 @@
 {
-  "x86_64": {
-    "notes": "v4: prefer 512-bit vectors",
-    "profiles": {
-      "x86-64-v1": ["-Ctarget-cpu=x86-64"],
-      "x86-64-v2": ["-Ctarget-cpu=x86-64-v2"],
-      "x86-64-v3": ["-Ctarget-cpu=x86-64-v3"],
-      "x86-64-v4": ["-Ctarget-cpu=x86-64-v4", "-Ctarget-feature=-prefer-256-bit"]
+  "x86_64": [
+    {
+      "name": "{OS} x86-64-v1",
+      "rustflags": ["-Ctarget-cpu=x86-64"]
+    },
+    {
+      "name": "{OS} x86-64-v2",
+      "requires": ["x86-64-v2"],
+      "rustflags": ["-Ctarget-cpu=x86-64-v2"]
+    },
+    {
+      "name": "{OS} x86-64-v3",
+      "requires": ["x86-64-v3"],
+      "rustflags": ["-Ctarget-cpu=x86-64-v3"]
+    },
+    {
+      "name": "{OS} x86-64-v4",
+      "requires": ["x86-64-v4"],
+      "rustflags": ["-Ctarget-cpu=x86-64-v4", "-Ctarget-feature=-prefer-256-bit"]
     }
-  },
-  "wasm32": {
-    "notes": "",
-    "profiles": {
-      "simd128": ["-Ctarget-cpu=generic", "-Ctarget-feature=+simd128,-relaxed-simd"],
-      "simd128-relaxed": ["-Ctarget-cpu=generic", "-Ctarget-feature=+simd128,+relaxed-simd"]
+  ],
+  "wasm32": [
+    {
+      "name": "WASM SIMD ({OS} {ARCH})",
+      "rustflags": ["-Ctarget-feature=+simd128,-relaxed-simd"]
+    },
+    {
+      "name": "WASM Relaxed SIMD ({OS} {ARCH})",
+      "rustflags": ["-Ctarget-feature=+simd128,+relaxed-simd"]
     }
-  },
-  "other": {
-    "notes": "",
-    "profiles": {
-      "baseline": ["-Ctarget-cpu=generic"],
-      "native": ["-Ctarget-cpu=native"]
+  ],
+  "other": [
+    {
+      "name": "{OS} {ARCH}",
+      "rustflags": []
     }
-  }
+  ]
 }

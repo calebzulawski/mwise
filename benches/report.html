@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>mwise benchmarks</title>
+<style>
+  :root { color-scheme: light; --ink: #172b4d; --muted: #526175; --line: #dce2ea; --paper: #fafbfd; --band: #eef2f7; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, sans-serif; }
+  button, input, select { font: inherit; }
+  button, select, input[type="search"] { border: 1px solid var(--line); border-radius: 6px; background: white; color: var(--ink); padding: 7px 10px; }
+  button { cursor: pointer; }
+  button:hover { background: var(--band); }
+  :focus-visible { outline: 2px solid #4477aa; outline-offset: 3px; }
+  input[type="checkbox"] { accent-color: #4477aa; width: 16px; height: 16px; flex: none; }
+  header { max-width: 1480px; margin: auto; padding: 24px 24px 18px; }
+  header h1 { margin: 0; font-size: 26px; letter-spacing: -.6px; }
+  main { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 20px; max-width: 1480px; padding: 0 24px 28px; margin: auto; align-items: start; }
+  aside { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; scrollbar-width: thin; border: 1px solid var(--line); border-radius: 8px; background: white; padding: 16px; }
+  fieldset { padding: 0; margin: 0 0 18px; border: 0; min-width: 0; }
+  legend { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 8px; }
+  .select-actions { display: flex; gap: 12px; margin: 0 0 6px; }
+  .select-actions button { border: 0; padding: 0; color: #36658f; background: transparent; font-size: 12px; }
+  .choice { display: flex; align-items: flex-start; gap: 8px; padding: 3px 0; cursor: pointer; font-size: 13px; }
+  .choice input { margin: 3px 0 0; }
+  .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex: none; }
+  .choice .swatch { margin: 6px 0 0; }
+  #search, #precision { width: 100%; }
+  #search { margin-bottom: 10px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+  .report { min-width: 0; }
+  .chart-card { overflow: hidden; }
+  #chart-scroll { overflow-x: auto; }
+  #chart { min-width: 760px; }
+  #chart svg { display: block; width: 100%; }
+  #chart rect.measurement:hover, #chart rect.measurement:focus { stroke: var(--ink); stroke-width: 1.5px; outline: none; }
+  #baseline-note { margin: 6px 0 0; color: var(--muted); font-size: 11px; text-align: center; }
+  #empty { padding: 56px 24px; text-align: center; }
+  #empty strong { display: block; font-size: 18px; margin-bottom: 8px; }
+  #empty p { margin: 0; color: var(--muted); }
+  details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+  summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+  .environments { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; padding-top: 12px; }
+  .environment { background: white; border: 1px solid var(--line); border-radius: 8px; padding: 16px; overflow-wrap: anywhere; }
+  .environment-platforms { list-style: none; margin: 0 0 12px; padding: 0 0 12px; border-bottom: 1px solid var(--line); }
+  .environment-platforms li { display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 600; padding: 2px 0; }
+  .environment dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 12px; margin: 0; font-size: 12px; }
+  .environment dt { font-weight: 600; }
+  .environment dd { margin: 0; color: var(--muted); }
+  #tooltip { position: fixed; z-index: 10; pointer-events: none; background: #172b4d; color: white; padding: 12px 15px; border-radius: 8px; font-size: 12px; box-shadow: 0 8px 28px #172b4d30; width: max-content; max-width: min(360px, calc(100vw - 24px)); }
+  #tooltip strong { display: block; font-size: 14px; margin-bottom: 4px; }
+  #tooltip p { margin: 3px 0; }
+  [hidden] { display: none !important; }
+  noscript { display: block; padding: 24px; }
+  @media (max-width: 900px) { main { grid-template-columns: 230px minmax(0, 1fr); gap: 16px; padding: 0 16px 24px; } header { padding: 20px 16px 16px; } aside { padding: 14px; } }
+  @media (max-width: 640px) { main { display: block; } aside { position: static; max-height: none; margin-bottom: 18px; } aside fieldset { margin-bottom: 16px; } #platforms, #families { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0 12px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>mwise benchmarks</h1>
+</header>
+<noscript>This interactive report requires JavaScript.</noscript>
+<main>
+  <aside aria-label="Benchmark filters">
+    <fieldset>
+      <legend>Precision</legend>
+      <select id="precision" aria-label="Precision"><option value="both">f32 and f64</option><option value="f32">f32</option><option value="f64">f64</option></select>
+    </fieldset>
+    <fieldset>
+      <legend>Platforms</legend>
+      <div class="select-actions"><button type="button" data-select="platforms" data-all="true">All</button><button type="button" data-select="platforms" data-all="false">None</button></div>
+      <div id="platforms"></div>
+    </fieldset>
+    <fieldset>
+      <legend>Functions</legend>
+      <input id="search" type="search" placeholder="Filter by name…" aria-label="Filter by function name" aria-describedby="search-hint">
+      <span class="sr-only" id="search-hint">Case-insensitive partial names. Separate alternatives with spaces or commas.</span>
+      <div class="select-actions"><button type="button" data-select="families" data-all="true">All families</button><button type="button" data-select="families" data-all="false">None</button></div>
+      <div id="families"></div>
+    </fieldset>
+    <button type="button" id="reset">Reset filters</button>
+  </aside>
+  <section class="report" aria-label="Benchmark report">
+    <div class="chart-card">
+      <div id="chart-scroll"><div id="chart"></div></div>
+      <p id="baseline-note"><sup>*</sup> The scalar baseline varies by function and platform, from scalar libm calls at the slow end to autovectorized operations at the fast end.</p>
+      <div id="empty" hidden><strong>No matching measurements</strong><p>Select a platform and family, or adjust the function name and precision filters.</p></div>
+    </div>
+    <details id="benchmark-details"><summary>Benchmark details</summary><div id="environments" class="environments"></div></details>
+  </section>
+</main>
+<div id="tooltip" role="tooltip" hidden></div>
+<script type="application/json" id="benchmark-data">__BENCHMARK_DATA__</script>
+<script>
+"use strict";
+(() => {
+  const data = JSON.parse(document.getElementById("benchmark-data").textContent);
+  const colors = ["#4477aa", "#66ccee", "#228833", "#ccbb44", "#ee6677", "#aa3377", "#7c6bb0", "#ee9955", "#44aa99", "#886644", "#6699cc", "#777777"];
+  const $ = id => document.getElementById(id);
+  const el = (tag, text, className) => { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node; };
+  const svgEl = (tag, attrs, text) => { const node = document.createElementNS("http://www.w3.org/2000/svg", tag); for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value); if (text !== undefined) node.textContent = text; return node; };
+  const familyOf = new Map();
+  for (const [index, series] of data.series.entries()) {
+    series.color = colors[index % colors.length];
+    series.widths = Object.fromEntries(["f32", "f64"].map(kind => [kind, [...new Set(series.rows.filter(row => row.kind === kind).map(row => row.lanes))].sort((a, b) => a - b)]));
+    series.lookup = new Map(series.rows.map(row => [`${row.operation}:${row.kind}:${row.lanes}`, row]));
+    for (const row of series.rows) familyOf.set(row.operation, row.family);
+  }
+  let state, selectedRows = [];
+  const choices = { platforms: data.series.map(series => series.id), families: data.families };
+  const defaults = { platforms: choices.platforms, families: choices.families.includes("Trigonometric") ? ["Trigonometric"] : choices.families };
+  function readState() {
+    const params = new URLSearchParams(location.hash.slice(1));
+    const selection = (key, values, defaultValues) => {
+      if (!params.has(key)) return new Set(defaultValues);
+      const requested = params.get(key), selected = requested.split(",").filter(value => values.includes(value));
+      // A bookmark may refer only to platforms/families that no longer exist.
+      // Keep explicit empty selections, but use defaults for stale values.
+      return new Set(requested && !selected.length ? defaultValues : selected);
+    };
+    return { platforms: selection("p", choices.platforms, defaults.platforms), families: selection("f", choices.families, defaults.families), search: params.get("q") || "", precision: ["f32", "f64"].includes(params.get("precision")) ? params.get("precision") : "both" };
+  }
+  function saveState() {
+    const params = new URLSearchParams();
+    for (const [name, key] of [["platforms", "p"], ["families", "f"]]) {
+      if (state[name].size !== defaults[name].length || defaults[name].some(value => !state[name].has(value))) params.set(key, choices[name].filter(value => state[name].has(value)).join(","));
+    }
+    if (state.search) params.set("q", state.search);
+    if (state.precision !== "both") params.set("precision", state.precision);
+    try { history.replaceState(null, "", `${location.pathname}${location.search}${params.size ? "#" + params : ""}`); } catch (_) { /* Some file viewers disable history changes. */ }
+  }
+  function syncControls() {
+    $("search").value = state.search; $("precision").value = state.precision;
+    for (const name of Object.keys(choices)) for (const checkbox of $(name).querySelectorAll("input")) checkbox.checked = state[name].has(checkbox.value);
+  }
+  function addChoice(name, value, text, color) {
+    const label = el("label", undefined, "choice");
+    const checkbox = el("input"); checkbox.type = "checkbox"; checkbox.value = value;
+    checkbox.addEventListener("change", () => { checkbox.checked ? state[name].add(value) : state[name].delete(value); update(); });
+    label.append(checkbox);
+    if (color) { const swatch = el("span", undefined, "swatch"); swatch.style.background = color; swatch.setAttribute("aria-hidden", "true"); label.append(swatch); }
+    label.append(el("span", text)); $(name).append(label);
+  }
+  for (const series of data.series) {
+    addChoice("platforms", series.id, series.label, series.color);
+  }
+  for (const family of data.families) addChoice("families", family, family);
+  for (const button of document.querySelectorAll("[data-select]")) button.addEventListener("click", () => { const name = button.dataset.select; state[name] = new Set(button.dataset.all === "true" ? choices[name] : []); syncControls(); update(); });
+  $("reset").addEventListener("click", () => { state = { platforms: new Set(defaults.platforms), families: new Set(defaults.families), search: "", precision: "both" }; syncControls(); update(); });
+  $("search").addEventListener("input", () => { state.search = $("search").value; update(); });
+  $("precision").addEventListener("change", () => { state.precision = $("precision").value; update(); });
+  window.addEventListener("hashchange", () => { state = readState(); syncControls(); update(false); });
+  const tooltip = $("tooltip");
+  function hideTooltip() { tooltip.hidden = true; }
+  function showTooltip(series, row, x, y) {
+    tooltip.replaceChildren(el("strong", `${row.operation} · ${row.kind} × ${row.lanes}`), el("p", series.label), el("p", `${row.speedup.toFixed(2)}× speedup`), el("p", `Scalar: ${row.scalar_ns_per_element.toPrecision(4)} ns/element`), el("p", `mwise: ${row.vector_ns_per_element.toPrecision(4)} ns/element`));
+    tooltip.hidden = false;
+    tooltip.style.left = `${Math.max(12, Math.min(x + 14, innerWidth - tooltip.offsetWidth - 12))}px`;
+    tooltip.style.top = `${Math.max(12, Math.min(y + 14, innerHeight - tooltip.offsetHeight - 12))}px`;
+  }
+  window.addEventListener("scroll", hideTooltip, true);
+  window.addEventListener("keydown", event => { if (event.key === "Escape") hideTooltip(); });
+  function drawChart(platforms, operations, kinds) {
+    const width = Math.max(760, $("chart-scroll").clientWidth);
+    const center = width / 2, gutter = 124, outer = 24;
+    const panelWidth = kinds.length === 2 ? (width - gutter - outer * 2) / 2 : width - gutter - outer * 2;
+    const origins = kinds.length === 2 ? { f32: center - gutter / 2, f64: center + gutter / 2 } : { [kinds[0]]: outer + gutter };
+    const slots = platforms.flatMap(series => Array.from({ length: Math.max(1, ...kinds.map(kind => series.widths[kind].length)) }, (_, index) => ({ series, index })));
+    const rowHeight = Math.max(36, slots.length * 14 + 10);
+    const top = 56, bottom = 40;
+    const height = top + operations.length * rowHeight + bottom;
+    const svg = svgEl("svg", { xmlns: "http://www.w3.org/2000/svg", viewBox: `0 0 ${width} ${height}`, width, height, role: "img", "aria-label": "mwise benchmarks · selected speedups", "aria-describedby": "plot-description baseline-note" });
+    svg.append(svgEl("desc", { id: "plot-description" }, "Mirrored bars compare f32 and f64 speedup against each platform's own scalar baseline at 1×. Missing measurements are shown as dashes. Focus or hover bars for timing details."));
+    const add = (tag, attrs, text) => { const node = svgEl(tag, attrs, text); svg.append(node); return node; };
+    const text = (x, y, content, extra = {}) => add("text", { x, y, fill: "#172b4d", "font-family": "system-ui, sans-serif", "font-size": 12, ...extra }, content);
+    add("rect", { width, height, fill: "#fafbfd" });
+    const maximum = Math.max(1, ...selectedRows.map(row => row.speedup)) * 1.15;
+    const tickRaw = maximum / 6, magnitude = 10 ** Math.floor(Math.log10(tickRaw));
+    const tickStep = [1, 2, 2.5, 5, 10].find(step => step * magnitude >= tickRaw) * magnitude;
+    const position = (kind, value) => origins[kind] + (kinds.length === 2 && kind === "f32" ? -1 : 1) * panelWidth * value / maximum;
+    const backgrounds = add("g", {}), grids = add("g", {}), bars = add("g", {}), labels = add("g", {});
+    let y = top;
+    for (const [opIndex, operation] of operations.entries()) {
+      const background = opIndex % 2 === 0 ? "#eef2f7" : "#fafbfd";
+      backgrounds.append(svgEl("rect", { x: 0, y, width, height: rowHeight, fill: background }));
+      labels.append(svgEl("text", { x: kinds.length === 2 ? center : outer + gutter / 2, y: y + rowHeight / 2 + 4, "text-anchor": "middle", fill: "#172b4d", "font-size": 12, "font-family": "system-ui, sans-serif", "font-weight": 600 }, operation));
+      for (const [slotIndex, { series, index }] of slots.entries()) {
+        const barY = y + (rowHeight - slots.length * 14) / 2 + slotIndex * 14, barHeight = 11;
+        for (const kind of kinds) {
+          const lanes = series.widths[kind][index], row = series.lookup.get(`${operation}:${kind}:${lanes}`);
+          const mirrored = kinds.length === 2 && kind === "f32";
+          if (!row) { labels.append(svgEl("text", { x: origins[kind] + (mirrored ? -14 : 14), y: barY + 9, fill: "#a0acbb", "font-size": 10 }, "—")); continue; }
+          const barWidth = Math.max(.3, panelWidth * row.speedup / maximum);
+          const rect = svgEl("rect", { x: mirrored ? origins[kind] - barWidth : origins[kind], y: barY, width: barWidth, height: barHeight, rx: 1, fill: series.color, tabindex: 0, role: "img", "class": "measurement", "aria-label": `${series.label}, ${operation}, ${kind} × ${lanes}: ${row.speedup.toFixed(2)} times speedup, scalar ${row.scalar_ns_per_element.toPrecision(4)}, mwise ${row.vector_ns_per_element.toPrecision(4)} nanoseconds per element` });
+          rect.addEventListener("pointermove", event => showTooltip(series, row, event.clientX, event.clientY));
+          rect.addEventListener("pointerleave", hideTooltip);
+          rect.addEventListener("focus", () => { const box = rect.getBoundingClientRect(); showTooltip(series, row, box.x + box.width / 2, box.y); });
+          rect.addEventListener("blur", hideTooltip); bars.append(rect);
+          const labelX = position(kind, row.speedup) + (mirrored ? -5 : 5);
+          labels.append(svgEl("text", { x: labelX, y: barY + 9, "text-anchor": mirrored ? "end" : "start", fill: "#334155", "font-size": 10, "font-family": "system-ui, sans-serif", "paint-order": "stroke", stroke: background, "stroke-width": 3, "stroke-linejoin": "round", "pointer-events": "none" }, `${row.speedup.toFixed(2)}×`));
+        }
+      }
+      y += rowHeight;
+    }
+    for (const kind of kinds) {
+      const widths = [...new Set(platforms.flatMap(series => series.widths[kind]))].sort((a, b) => a - b);
+      text((origins[kind] + position(kind, maximum)) / 2, top - 30, `${kind} × ${widths.join(" / ") || "—"}`, { "text-anchor": "middle", "font-size": 15, "font-weight": 700 });
+      for (let tick = 0; tick <= maximum + tickStep * 1e-8; tick += tickStep) {
+        const x = position(kind, tick);
+        grids.append(svgEl("line", { x1: x, x2: x, y1: top, y2: y, stroke: "#dce2ea", "stroke-width": .7 }));
+        text(x, y + 18, `${Number(tick.toPrecision(3))}×`, { "text-anchor": "middle", "font-size": 10, fill: "#526175" });
+      }
+      const x = position(kind, 1);
+      bars.append(svgEl("line", { x1: x, x2: x, y1: top, y2: y, stroke: "#334155", "stroke-dasharray": "4 4", "stroke-width": 1, "pointer-events": "none" }));
+      text(x, top - 10, "Scalar (1×)", { "text-anchor": "middle", "font-size": 10, fill: "#526175" });
+    }
+    const axisLabel = text(width / 2, height - 8, "Speedup (median scalar / median mwise)", { "text-anchor": "middle", "font-size": 11, fill: "#526175" });
+    axisLabel.append(svgEl("tspan", { "baseline-shift": "super", "font-size": 8 }, "*"));
+    $("chart").replaceChildren(svg);
+  }
+  function update(save = true) {
+    hideTooltip();
+    const platforms = data.series.filter(series => state.platforms.has(series.id));
+    const kinds = state.precision === "both" ? ["f32", "f64"] : [state.precision];
+    const terms = state.search.toLowerCase().split(/[\s,]+/).filter(Boolean);
+    const matches = operation => state.families.has(familyOf.get(operation)) && (!terms.length || terms.some(term => operation.toLowerCase().includes(term)));
+    selectedRows = platforms.flatMap(series => series.rows.filter(row => kinds.includes(row.kind) && matches(row.operation)));
+    const available = new Set(selectedRows.map(row => row.operation));
+    const operations = data.operations.filter(operation => available.has(operation));
+    $("empty").hidden = selectedRows.length > 0; $("chart-scroll").hidden = !selectedRows.length; $("baseline-note").hidden = !selectedRows.length;
+    if (selectedRows.length) drawChart(platforms, operations, kinds); else $("chart").replaceChildren();
+    if (save) saveState();
+  }
+  for (const run of data.runs) {
+    const card = el("article", undefined, "environment"), platforms = el("ul", undefined, "environment-platforms"), dl = el("dl");
+    const metadata = run.metadata;
+    for (const series of data.series.filter(series => series.run === run.id)) {
+      const item = el("li"), swatch = el("span", undefined, "swatch");
+      swatch.style.background = series.color; swatch.setAttribute("aria-hidden", "true");
+      item.title = series.rustflags;
+      item.append(swatch, el("span", series.label)); platforms.append(item);
+    }
+    card.append(platforms, dl);
+    const detail = (label, value, fullValue = value) => {
+      if (value === undefined || value === null || value === "") return;
+      const description = el("dd", String(value));
+      if (fullValue !== value) description.title = String(fullValue);
+      dl.append(el("dt", label), description);
+    };
+    detail("Source", run.source);
+    detail("Machine", metadata.cpu);
+    detail("System", metadata.os);
+    detail("Host", metadata.host);
+    detail("Target", metadata.target);
+    detail("Compiler", metadata.rustc?.split("\n")[0], metadata.rustc);
+    detail("Runtime", metadata.runtime?.split("\n")[0], metadata.runtime);
+    if (metadata.date_utc) {
+      const date = new Date(metadata.date_utc);
+      const measured = Number.isNaN(date.getTime()) ? metadata.date_utc : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short", hourCycle: "h23", timeZone: "UTC" }).format(date) + " UTC";
+      detail("Measured", measured);
+    }
+    detail("Commit", metadata.commit?.slice(0, 12), metadata.commit);
+    $("environments").append(card);
+  }
+  let resizeTimer;
+  window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => update(false), 120); });
+  state = readState(); syncControls(); update(false);
+})();
+</script>
+</body>
+</html>

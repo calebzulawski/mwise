@@ -29,18 +29,17 @@ jobs:
           python-version: '3.13'
       - name: Install benchmark dependencies
         run: python -m pip install -r benches/requirements.txt
-      - name: Run benchmarks and generate plots
+      - name: Run benchmarks
         run: python benches/run.py
+      - name: Generate benchmark report
+        run: python benches/report.py target/benchmarks/results.json
       - name: Upload benchmark results
         uses: actions/upload-artifact@v7
         with:
           name: benchmarks-${{ matrix.os }}
           path: |
-            target/benchmarks/*.json
-            target/benchmarks/*.jsonl
-            target/benchmarks/*.csv
-            target/benchmarks/*.png
-            target/benchmarks/*.svg
+            target/benchmarks/results.json
+            target/benchmarks/*.html
           if-no-files-found: error
 
   benchmark-wasm:
@@ -60,22 +59,21 @@ jobs:
           python-version: '3.13'
       - name: Install benchmark dependencies
         run: python -m pip install -r benches/requirements.txt
-      - name: Run WASM benchmarks and generate plots
+      - name: Run WASM benchmarks
         run: python benches/run.py --target wasm32-wasip1
+      - name: Generate WASM benchmark report
+        run: python benches/report.py target/benchmarks-wasm/results.json
       - name: Upload WASM benchmark results
         uses: actions/upload-artifact@v7
         with:
           name: benchmarks-wasm32-wasip1
           path: |
-            target/benchmarks-wasm/*.json
-            target/benchmarks-wasm/*.jsonl
-            target/benchmarks-wasm/*.csv
-            target/benchmarks-wasm/*.png
-            target/benchmarks-wasm/*.svg
+            target/benchmarks-wasm/results.json
+            target/benchmarks-wasm/*.html
           if-no-files-found: error
 
   publish:
-    name: Publish benchmark charts
+    name: Publish interactive benchmarks
     needs: [benchmark, benchmark-wasm]
     if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     runs-on: ubuntu-24.04
@@ -87,21 +85,22 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
       - uses: actions/download-artifact@v8
         with:
           pattern: benchmarks-*
           path: target/benchmark-artifacts
-      - name: Collect benchmark PNGs
+      - name: Merge platform results into one report
         run: |
-          mkdir -p target/benchmark-site/benchmarks
-          for runner in ubuntu-24.04 ubuntu-24.04-arm macos-15 wasm32-wasip1; do
-            cp "target/benchmark-artifacts/benchmarks-$runner/speedup.png" \
-              "target/benchmark-site/benchmarks/$runner.png"
-          done
+          python benches/report.py target/benchmark-artifacts/*/results.json \
+            --output target/benchmark-site/benchmarks/index.html
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
           path: target/benchmark-site
-      - name: Deploy benchmark PNGs
+      - name: Deploy benchmark report
         id: deployment
         uses: actions/deploy-pages@v5
