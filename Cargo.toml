@@ -1,6 +1,6 @@
 [package]
 name = "mwise"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 license = "MIT"
 description = "mwise provides portable vectorized elementwise implementations of basic libm functions"
