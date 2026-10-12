@@ -1,0 +1,60 @@
+name: Release-plz
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  publish:
+    name: Publish crate and GitHub release
+    runs-on: ubuntu-24.04
+    if: ${{ github.repository_owner == 'calebzulawski' }}
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@nightly
+      - name: Publish crate and GitHub release
+        uses: release-plz/action@v0.5
+        with:
+          command: release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  release-pr:
+    if: ${{ github.repository_owner == 'calebzulawski' }}
+    name: Prepare release PR
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: release-plz-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@nightly
+      - name: Create or update release PR
+        uses: release-plz/action@v0.5
+        with:
+          command: release-pr
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

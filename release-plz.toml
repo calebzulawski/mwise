@@ -1,0 +1,5 @@
+[workspace]
+release_always = false
+git_release_type = "auto"
+git_release_generate_notes = true
+git_release_body = ""
